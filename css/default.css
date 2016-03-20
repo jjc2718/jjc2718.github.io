@@ -522,11 +522,11 @@
 
   .pictureq {
     float: left;
-    width: 150px;
-    height: 150px;
+    width: 165px;
+    height: 165px;
   }
   .picture-text {
-    margin-left: 160px
+    margin-left: 190px;
   }
 
 /*********************************************************************************/
