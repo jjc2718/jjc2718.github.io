@@ -628,3 +628,37 @@
     margin-top: 1em;
   }
 
+/*********************************************************************************/
+/* CV                                                                      */
+/*********************************************************************************/
+
+  .cv-header {
+      float: left;
+      width: 250px;
+  }
+
+  .cv-contents {
+      margin-left: 300px;
+  }
+
+  .cv-section {
+      margin: 5px 0 25px 0;
+  }
+
+  .cv-divider {
+      background-color: #C0C0C0;
+      margin: 30px 0 30px 0;
+      height: 1px;
+      width: 100%;
+    }
+
+  .cv-subtitle {
+      font-size: 1.2em;
+  }
+
+  .cv-blurb {
+      font-size: 0.9em;
+      margin: 10px 0 10px 0;
+  }
+
+
