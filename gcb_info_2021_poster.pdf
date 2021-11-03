@@ -1,0 +1,213 @@
+\pdfminorversion=4
+%--A0 beamer slide-------------------------------------------------------------
+\documentclass[final]{beamer}
+\usepackage[orientation=landscape,size=custom,
+    width=160,height=120,scale=1.85 % font scale factor
+    ]{beamerposter}
+\geometry{
+  hmargin=1.5cm, % little modification of margins
+  vmargin=0cm,
+}
+
+\setbeamercolor{background canvas}{bg=white}
+
+\usepackage[super, comma, sort&compress]{natbib}
+\bibliographystyle{ieeetr}
+\renewcommand{\bibname}{}
+\renewcommand{\bibsection}{}
+
+%
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{enumitem}
+\setitemize{label=\usebeamerfont*{itemize item}%
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}}
+
+%\usepackage[english]{babel}
+\usepackage{blindtext}
+
+%\usepackage[font=small]{caption}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+
+\PassOptionsToPackage{cmyk}{xcolor}
+%\usepackage{pst-all}
+
+\usepackage{hyperref}
+
+\linespread{1.05}
+%
+%==The poster style============================================================
+\usetheme{greenelab}
+
+%==Title, date and authors of the poster=======================================
+\title
+[GCB Information Session - November 4, 2021] % Conference
+{Gene expression and DNA methylation consistently predict cancer mutational states}
+
+\author{ % Authors
+    Jake Crawford\inst{1}, Brock C. Christensen\inst{2,3}, Maria Chikina\inst{4}, Casey S. Greene\inst{5,6}
+}
+\institute
+[University of Pennsylvania]
+{
+\inst{1} Genomics and Computational Biology (GCB) Graduate Group, Perelman School of Medicine, University of Pennsylvania\\
+\inst{2} Department of Epidemiology, Geisel School of Medicine, Dartmouth College \\
+\inst{3} Department of Molecular and Systems Biology, Geisel School of Medicine, Dartmouth College \\
+\inst{4} Department of Computational and Systems Biology, School of Medicine, University of Pittsburgh \\
+\inst{5} Department of Biochemistry and Molecular Genetics, University of Colorado School of Medicine \\
+\inst{6} Center for Health AI, University of Colorado School of Medicine
+}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}[fragile,t]
+\begin{multicols*}{3}
+
+\section{Background}
+\begin{description}[topsep=0.5cm,leftmargin=1cm,rightmargin=1cm,labelindent=0.5cm]
+    \setlength\itemsep{0.5cm}
+    \item \textbf{Research questions:} \\
+    \begin{description}[font=$\bullet$\scshape\bfseries,topsep=0.5cm]
+        \setlength\itemsep{0.5cm}
+        \item Which -omics type captures the functional signatures of
+              cancer mutations most effectively? Is this dependent on
+              the gene(s) that are mutated?
+        \item Does combining multiple -omics types improve detection?
+    \end{description}
+    \vskip0.2cm
+    \item \textbf{Framing as a prediction problem:} \\
+    \item We want to predict cancer mutation presence or absence using -omics
+          data in the TCGA Pan-Cancer Atlas: gene expression, DNA methylation,
+          reverse phase protein array (RPPA), microRNA, somatic mutational
+          signatures.
+    \vskip1.5cm
+\end{description}
+\begin{center}
+\includegraphics[width=0.7\columnwidth]{./images/greg_fig1.jpg}
+\vskip1cm
+\end{center}
+\begin{description}[topsep=0.5cm,leftmargin=1cm,rightmargin=1cm,labelindent=0.5cm]
+    \setlength\itemsep{0.5cm}
+    \item Figure from Way et al. 2018 \cite{way2018machine}
+    \vskip1cm
+\end{description}
+
+\section{Approach}
+\begin{description}[font=$\bullet$\scshape\bfseries,topsep=0.5cm,leftmargin=2cm,rightmargin=1cm,labelindent=0.5cm]
+    \setlength\itemsep{0.5cm}
+    \item Cancer gene set from Vogelstein et al. 2013 \cite{vogelstein2013cancer},
+          $\sim$85 cancer-related genes
+    \item Elastic net logistic regression
+    \item 2 replicates (random seeds) x 4-fold CV, stratified by cancer type
+    \item Compare classifiers against baseline with permuted labels, and
+          compare directly between data types
+\vskip0.5cm
+\hspace{-1.75cm}\includegraphics[width=\columnwidth]{./images/cv_schematic.png}
+\vskip0.5cm
+\end{description}
+\newpage
+
+\section{Results}
+\begin{description}[topsep=0.5cm,leftmargin=1cm,rightmargin=1cm,labelindent=0.5cm]
+    \setlength\itemsep{0.5cm}
+    \item On aggregate over the Vogelstein et al. gene set, gene expression
+          and Illumina 450K DNA methylation array data were similarly effective
+          predictors of mutation status, with 27K methylation array data slightly
+          less effective.
+    \vskip2cm
+    \begin{center}
+    \includegraphics[width=0.9\columnwidth]{./images/methylation_best_boxes_poster.png}
+    \end{center}
+    \vskip2cm
+    \item Breaking down performance by individual gene, most genes do
+          not significantly differ between data types (data points close to origin).
+    \vskip2cm
+    \begin{center}
+    \includegraphics[width=0.9\columnwidth]{./images/methylation_comparison.png}
+    \end{center}
+    \vskip2cm
+    \item When we compare all data types using all cancer genes, the expression
+          and DNA methylation datasets significantly outperform the remaining
+          data types.
+    \begin{center}
+    \vskip2cm
+    \includegraphics[width=0.9\columnwidth]{./images/all_boxes_poster.png}
+    \end{center}
+    \newpage
+    \item For the remaining data types, on the individual gene level, gene
+          expression generally provides better performance (genes/points in
+          the top left).
+    \vskip2cm
+    \begin{center}
+    \includegraphics[width=0.95\columnwidth]{./images/all_comparison.png}
+    \end{center}
+    \item We also built multi-omics models by concatenating combinations of the
+          expression and methylation datasets. For each data type, we used the
+          top 5000 principal components as predictive features.
+    \item Using six pan-cancer driver genes as targets, none of the multi-omics
+          models significantly outperformed the best-performing single-omics model.
+    \begin{center}
+    \vskip1.5cm
+    \includegraphics[width=0.9\columnwidth]{./images/multi_omics_best_model_poster.png}
+    \vskip0.5cm
+    \end{center}
+    \item We anticipate that these results will be useful in study design:
+          \textbf{\textit{gene expression}} and \textbf{\textit{DNA methylation}}
+          are $\sim$equally effective as a functional readout.
+    \vskip1.5cm
+\end{description}
+
+% \section{Takeaways and Data/Code}
+% \begin{description}[topsep=0.5cm,leftmargin=1cm,rightmargin=1cm,labelindent=0.5cm]
+%     \setlength\itemsep{1cm}
+%     \item \textbf{Main Takeaways:} \\
+%           \begin{itemize}[topsep=0.5cm,label=$\bullet$]
+%             \setlength\itemsep{0.5cm}
+%             \item Gene expression and DNA methylation provide comparable
+%                   performance in capturing functional signatures of cancer
+%                   mutation.
+%             \item Interestingly, for most genes \textit{either data type} can
+%                   be used as an approximately effective downstream readout;
+%                   there isn't a ``right choice'' data modality to identify
+%                   the majority of mutations.
+%             \item Other data modalities do not perform as well, although
+%                   RPPA profiles capture a considerable amount of signal
+%                   with far fewer features.
+%             \item A simple approach to integrating multiple -omics types
+%                   doesn't seem to help for this problem (an opportunity for
+%                   future improvement).
+%           \end{itemize}
+%     \item \textbf{Data and code availability:} \\
+%           \vskip0.2cm
+%           \hspace{2cm}\url{https://github.com/greenelab/mpmp}
+%       \item \textbf{Draft of manuscript (currently in-progress using Manubot \cite{himmelstein2019open}):} \\
+%           \vskip0.2cm
+%           \hspace{2cm}\url{https://greenelab.github.io/mpmp-manuscript/}
+% \end{description}
+% \vskip0.5cm
+
+\section{Relevant Links}
+\begin{description}[topsep=0.4cm,leftmargin=1cm,rightmargin=1cm,labelindent=0.5cm]
+    \setlength\itemsep{1cm}
+      \item \textbf{bioRxiv preprint (written using Manubot \cite{himmelstein2019open}):} \\
+          \vskip0.2cm
+          \hspace{2cm}\url{https://doi.org/gnbdm9}
+      \item \textbf{Data and code availability:} \\
+          \vskip0.2cm
+          \hspace{2cm}\url{https://github.com/greenelab/mpmp}
+      \item \textbf{Link to this poster:} \\
+          \vskip0.2cm
+          \hspace{2cm}\url{http://jjc2718.github.io/gcb_info_2021_poster.pdf}
+\end{description}
+\vskip0.75cm
+
+\section{References}
+{\scriptsize
+\bibliography{references} }
+\end{multicols*}
+\end{frame}
+
+\end{document}
